@@ -803,25 +803,20 @@ píxeles).
 lugares en coordenadas geográficas (latitud, longitud) mediante búsqueda textual
 en la base de datos de OSM.
 
-```python
-geolocator = Nominatim(user_agent="viajante_spain_agent")
-location = geolocator.geocode(f"{city_name}, Spain")
-```
-
-El parámetro `user_agent` es obligatorio: Nominatim bloquea peticiones sin un
-User-Agent identificativo.
-
-**Respeto de límites de uso**: La política de uso de Nominatim exige un máximo
-de **1 petición por segundo**. El script implementa:
+Para evitar geocodificar en cada ejecución (y respetar los límites de uso de
+Nominatim de **1 petición por segundo**), el script independiente
+`coordenadas_centros.py` se encarga de buscar y persistir las coordenadas de
+todas las ciudades en el archivo `data/coordenadas_centro.json`.
 
 ```python
-time.sleep(1.2)  # 1.2 segundos entre peticiones
+geolocator = Nominatim(user_agent="calculadora_rutas_espana")
+ubicacion = geolocator.geocode({"city": ciudad, "country": "Spain"})
+time.sleep(1)  # Respeto obligatorio a Nominatim
 ```
 
-Esto significa que geocodificar las 47 ciudades tarda aproximadamente $47 \times
-1.2 \approx 56$ segundos. Para evitar repetir este proceso, `draw_map.py` persiste
-las coordenadas en `data/coordenadas.json`, y `draw_static_map.py` las lee
-directamente de ese archivo.
+De esta manera, `draw_map.py` y `draw_static_map.py` simplemente cargan las
+coordenadas previamente calculadas desde el archivo JSON, haciendo que la
+generación del mapa sea instantánea y sin dependencias de red.
 
 #### 6.2.2 Folium
 
@@ -888,11 +883,11 @@ image.save('mapa_ruta_estatico.png')
 ```
 
 **Coordenadas desde archivo**: Para evitar repetir la geocodificación (lenta),
-las coordenadas generadas por `draw_map.py` se persisten en `data/coordenadas.json`
-(formato JSON: `{"M": [40.416, -3.703], "TO": [39.855, -4.024], ...}`) y
-`draw_static_map.py` las lee desde ahí.
-```
+las coordenadas generadas previamente por `coordenadas_centros.py` se leen de
+`data/coordenadas_centro.json` (formato JSON: `{"M": [40.416, -3.703], ...}`) y
+tanto `draw_map.py` como `draw_static_map.py` las leen desde ahí.
 
+````
 **Convención de coordenadas**: Es importante notar la diferencia:
 
 | Librería           | Orden de coordenadas |
@@ -904,7 +899,7 @@ El código maneja esta conversión explícitamente:
 
 ```python
 route_lonlat = [(coords[code][1], coords[code][0]) for code in ruta]
-```
+````
 
 **Elementos visuales**:
 
@@ -1027,7 +1022,7 @@ uv sync
 just all        # Pipeline completo: conectar → resolver → grafo → mapa → estatico
 just resolver   # Solo el solver TSP → data/ruta_optima.json
 just grafo      # Solo el grafo → ruta_optima.png
-just mapa       # Solo el mapa interactivo → mapa_ruta.html + data/coordenadas.json
+just mapa       # Solo el mapa interactivo → mapa_ruta.html + data/coordenadas_centro.json
 just estatico   # Solo el mapa estático → mapa_ruta_estatico.png
 just conectar   # Solo la conectividad → data/conectividad.json
 just rutas      # Solo el cálculo teórico de rutas
@@ -1039,7 +1034,7 @@ just clean      # Limpiar todos los archivos generados
 ```bash
 uv run python solve_tsp.py          # Solver TSP → data/ruta_optima.json
 uv run python draw_route.py         # Grafo estático → ruta_optima.png
-uv run python draw_map.py           # Mapa interactivo → mapa_ruta.html + data/coordenadas.json
+uv run python draw_map.py           # Mapa interactivo → mapa_ruta.html + data/coordenadas_centro.json
 uv run python draw_static_map.py    # Mapa estático → mapa_ruta_estatico.png
 uv run python connectivity.py       # Distribución de grados → data/conectividad.json
 uv run python tsp_routes_count.py   # Número teórico de rutas

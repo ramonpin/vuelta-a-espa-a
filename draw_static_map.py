@@ -4,7 +4,7 @@ from staticmap import StaticMap, Line, CircleMarker
 
 DATA_DIR = 'data'
 ROUTE_FILE = os.path.join(DATA_DIR, 'ruta_optima.json')
-COORDS_FILE = os.path.join(DATA_DIR, 'coordenadas.json')
+COORDS_FILE = os.path.join(DATA_DIR, 'coordenadas_centro.json')
 
 
 def load_coords(filepath):

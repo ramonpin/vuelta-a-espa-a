@@ -22,5 +22,5 @@ rutas:
 all: conectar resolver grafo mapa estatico
 
 clean:
-    rm -f data/ruta_optima.json data/coordenadas.json data/conectividad.json
+    rm -f data/ruta_optima.json data/coordenadas_centro.json data/conectividad.json
     rm -f ruta_optima.png mapa_ruta.html mapa_ruta_estatico.png

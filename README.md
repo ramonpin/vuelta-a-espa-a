@@ -56,7 +56,7 @@ just clean      # Limpiar archivos generados
 ```bash
 uv run python solve_tsp.py          # Solver TSP → data/ruta_optima.json
 uv run python draw_route.py         # Grafo estático → ruta_optima.png
-uv run python draw_map.py           # Mapa interactivo → mapa_ruta.html + data/coordenadas.json
+uv run python draw_map.py           # Mapa interactivo → mapa_ruta.html + data/coordenadas_centro.json
 uv run python draw_static_map.py    # Mapa estático → mapa_ruta_estatico.png
 uv run python connectivity.py       # Conectividad → data/conectividad.json
 uv run python tsp_routes_count.py   # Cálculo teórico de rutas
@@ -71,7 +71,7 @@ data/ciudades.tsv (códigos de ciudad → nombres)                           │
                                                                           │
      solve_tsp.py                 → data/ruta_optima.json                 │
      draw_route.py   + ruta.json  → ruta_optima.png                       │
-     draw_map.py     + ruta.json  → mapa_ruta.html + data/coordenadas.json│
+     draw_map.py     + ruta.json  → mapa_ruta.html + data/coordenadas_centro.json│
      draw_static_map.py           → mapa_ruta_estatico.png                │
      connectivity.py              → data/conectividad.json                │
      tsp_routes_count.py          → (stdout)                              │
