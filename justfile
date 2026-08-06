@@ -4,6 +4,9 @@ _default:
 resolver:
     uv run python solve_tsp.py
 
+resolver-genetico:
+    uv run python solve_tsp_genetic.py
+
 grafo: resolver
     uv run python draw_route.py
 
